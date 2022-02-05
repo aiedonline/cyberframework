@@ -1,0 +1,36 @@
+<?php
+
+
+function create_directory_recur($path_dir, $is_file){
+    $path_dir = substr($path_dir, 0, strrpos($path_dir, "/"));
+    if (file_exists($path_dir)){
+        return;
+    }
+    mkdir($path_dir, 0777, true);
+}
+
+class Json {
+    static public function FromFile($path){
+        try {
+            $json = file_get_contents($path);
+            return json_decode($json);
+        }catch(Exception $error){
+            echo $error;
+        }
+        return null;
+    }
+	
+	static public function WriteFile($path, $json){
+		try{
+            create_directory_recur($path, true);
+			$fp = fopen($path, 'w');
+			fwrite($fp, json_encode($json));
+			fclose($fp);
+			return true;
+		}catch(Exception $error){
+            echo $error;
+        }
+		return null;
+	}
+
+}
